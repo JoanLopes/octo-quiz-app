@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{% block title %}Octo Quiz{% endblock %}</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
   <!-- Seus outros estilos e scripts -->
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.x.x/dist/tailwind.min.css" rel="stylesheet" />
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
 
 </head>
 <body class="bg-gray-50  flex flex-col">
@@ -20,7 +19,9 @@
       <nav>
         <ul class="flex space-x-4">
           {% if user.is_authenticated %}
-            <li><a href="/" class="hover:underline">Dashboard</a></li>
+            <li><a href="/" class="hover:underline">Home</a></li>
+            <li><a href="{% url 'deck-list-page' %}" class="hover:underline">Decks</a></li>
+            <li><a href="{% url 'flashcard-list-page' %}" class="hover:underline">Flashcards</a></li>
             <li><a href="{% url 'logout' %}" class="hover:underline">Logout</a></li>
           {% else %}
             <li><a href="{% url 'home' %}" class="hover:underline">Login</a></li>

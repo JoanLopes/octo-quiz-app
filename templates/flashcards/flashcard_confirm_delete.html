@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-xl mx-[20%] mt-20 px-4" x-data="deleteFlashcard('{{ token }}')" x-init="init()">
+  <div class="bg-white shadow rounded p-6 text-center">
+    <h1 class="text-2xl font-bold text-red-600 mb-4">Excluir Flashcard</h1>
+    <p class="text-gray-700 mb-6">Tem certeza que deseja excluir <span class="font-semibold" x-text="card.question"></span>?</p>
+    <div class="flex justify-center space-x-4">
+      <button @click="confirmDelete" class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700">Excluir</button>
+      <a href="{% url 'flashcard-list-page' %}" class="text-gray-600 hover:text-indigo-700 underline">Cancelar</a>
+    </div>
+  </div>
+</div>
+
+<script>
+function deleteFlashcard(token) {
+  return {
+    pk: window.location.pathname.match(/\d+/)?.[0],
+    card: {},
+    async init() {
+      const res = await fetch(`/api/flashcards/${this.pk}/`, {
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` })
+        }
+      });
+      this.card = await res.json();
+    },
+    async confirmDelete() {
+      const res = await fetch(`/api/flashcards/${this.pk}/`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` })
+        }
+      });
+      if (res.ok) window.location.href = "{% url 'flashcard-list-page' %}";
+      else alert("Erro ao excluir.");
+    }
+  }
+}
+</script>
+{% endblock %}

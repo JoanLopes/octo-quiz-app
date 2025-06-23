@@ -1,16 +1,26 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="max-w-6xl mx-[20%] mt-16 px-4" x-data="deckList('{{ token }}')" x-init="fetchDecks()">
+<div class="max-w-6xl mx-[20%] mt-16 px-4 mb-8" x-data="deckList('{{ token }}')" x-init="fetchDecks()">
 
   <div class="text-center mb-10">
     <h1 class="text-4xl font-extrabold text-indigo-700">Meus Decks</h1>
     <p class="text-gray-600 mt-2">Gerencie seus conjuntos de flashcards de forma rápida e prática.</p>
   </div>
 
-  <div class="text-right mb-6">
+  <div class="flex items-center space-x-4">
+    <input type="text" placeholder="Buscar por nome ou descrição..."
+          class="w-full max-w-md border border-gray-300 rounded px-4 py-2 shadow-sm focus:ring-indigo-500"
+          x-model.debounce.500ms="search" @input="fetchDecks()">
+
+    <select x-model="ordering" @change="fetchDecks()"
+      class="border border-gray-300 rounded px-3 py-2 focus:ring-indigo-500">
+      <option value="name">A–Z</option>
+      <option value="-name">Z–A</option>
+    </select>
+
     <a href="{% url 'deck-create-page' %}"
-       class="inline-block px-6 py-2 rounded bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition">
+      class="px-6 py-2 rounded bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition">
       + Novo Deck
     </a>
   </div>
@@ -45,31 +55,84 @@
     </template>
   </div>
 
+  <!-- 🔄 Paginação -->
+  <div class="flex justify-center items-center mt-10 space-x-4" x-show="pagination.next || pagination.previous">
+    <button
+      @click="goToPage(pagination.previous)"
+      :disabled="!pagination.previous"
+      class="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      ← Anterior
+    </button>
+
+    <button
+      @click="goToPage(pagination.next)"
+      :disabled="!pagination.next"
+      class="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      Próxima →
+    </button>
+  </div>
+
 </div>
 
 <script>
   function deckList(token) {
     return {
-      loading: true,
       decks: [],
-      async fetchDecks() {
+      loading: false,
+      search: '',
+      ordering: 'name',
+      currentPage: 1,
+      pagination: {
+        next: null,
+        previous: null,
+      },
+
+      async fetchDecks(url = null) {
+        this.loading = true;
+
+        // monta os parâmetros se não estiver usando URL direta (próxima/anterior)
+        const finalUrl = url ?? `/api/decks/?${new URLSearchParams({
+          page: this.currentPage,
+          search: this.search,
+          ordering: this.ordering,
+        })}`;
+
         try {
-          const res = await fetch('/api/decks/', {
+          const res = await fetch(finalUrl, {
             headers: {
               'Content-Type': 'application/json',
               ...(token && { 'Authorization': `Bearer ${token}` })
             }
           });
-          if (!res.ok) throw new Error('Erro ao buscar decks');
-          this.decks = await res.json();
-        } catch (e) {
-          console.error('Erro ao carregar decks:', e);
+
+          const data = await res.json();
+
+          this.decks = data.results || data;
+          this.pagination.next = data.next;
+          this.pagination.previous = data.previous;
+
+          // Atualiza currentPage com base na URL retornada
+          const urlParams = new URL(res.url).searchParams;
+          this.currentPage = parseInt(urlParams.get('page') || 1);
+        } catch (err) {
+          console.error('Erro ao carregar decks:', err);
           this.decks = [];
         } finally {
           this.loading = false;
         }
+      },
+
+      goToPage(url) {
+        if (!url) return;
+        const urlObj = new URL(url);
+        const page = urlObj.searchParams.get('page');
+        this.currentPage = parseInt(page || 1);
+        this.fetchDecks(url);
       }
     }
   }
 </script>
+
 {% endblock %}
