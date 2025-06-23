@@ -7,7 +7,7 @@ Aplicativo web de estudos com **flashcards**, construído com **Django + DRF**, 
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seuusuario/flashcards-app.git
+git clone https://github.com/JoanLopes/octo-quiz-app.git
 cd flashcards-app
 ```
 
