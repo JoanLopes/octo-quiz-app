@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto my-20 items-center flex flex-col">
+
+  <header class="mb-10 text-center">
+    <h1 class="text-5xl font-extrabold text-indigo-700 tracking-tight drop-shadow-lg">
+      Bem-vindo ao <span class="text-indigo-900">OctoQuiz</span>
+    </h1>
+    <p class="mt-3 text-lg text-indigo-600 max-w-xl">
+      Sua plataforma para criar, gerenciar e responder quizzes — tudo em um só lugar.
+    </p>
+  </header>
+
+  <main class="flex-grow grid grid-cols-1 md:grid-cols-2 gap-8 max-h-[300px]">
+
+    <a href="{% url 'quiz-list-page' %}" class="transform hover:scale-105 transition duration-300 bg-white rounded-lg shadow-lg p-8 flex flex-col items-center text-indigo-800">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m-6-8h6m2 8v2a2 2 0 002 2h2a2 2 0 002-2v-2M5 12H3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5z" />
+      </svg>
+      <h2 class="text-2xl font-semibold mb-2">Gerenciar Quizzes</h2>
+      <p class="text-center text-gray-600">Crie e edite quizzes para seus usuários.</p>
+    </a>
+
+    <a href="{% url 'question-list-page' %}" class="transform hover:scale-105 transition duration-300 bg-white rounded-lg shadow-lg p-8 flex flex-col items-center text-green-700">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422A12.083 12.083 0 0112 21.5 12.083 12.083 0 015.84 10.578L12 14z" />
+      </svg>
+      <h2 class="text-2xl font-semibold mb-2">Gerenciar Perguntas</h2>
+      <p class="text-center text-gray-600">Adicione, edite e organize perguntas para os quizzes.</p>
+    </a>
+
+    <a href="{% url 'category-list-page' %}" class="transform hover:scale-105 transition duration-300 bg-white rounded-lg shadow-lg p-8 flex flex-col items-center text-purple-700">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H9l-2-2H5a2 2 0 00-2 2z" />
+      </svg>
+      <h2 class="text-2xl font-semibold mb-2">Gerenciar Categorias</h2>
+      <p class="text-center text-gray-600">Crie e edite categorias para os quizzes.</p>
+    </a>
+
+    <a href="{% url 'choice-list-page' %}" class="transform hover:scale-105 transition duration-300 bg-white rounded-lg shadow-lg p-8 flex flex-col items-center text-yellow-700">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M7 12h.01M7 16h.01M7 8h.01M10 16h7M10 12h7M10 8h7" />
+      </svg>
+      <h2 class="text-2xl font-semibold mb-2">Gerenciar Escolhas</h2>
+      <p class="text-center text-gray-600">Adicione e edite as opções das perguntas.</p>
+    </a>
+
+  </main>
+
+</div>
+{% endblock %}

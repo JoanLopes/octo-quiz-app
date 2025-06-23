@@ -1,89 +1,85 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    {% load static %}
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <style>
-        /* CSS styles */
-        .login-container {
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
+{% extends "base.html" %}
 
-        .login-form {
-            display: flex;
-            flex-direction: column;
-        }
+{% block title %}Login / Register - Octo Quiz{% endblock %}
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-8 rounded shadow-md">
+  <h1 class="text-2xl font-bold mb-6 text-center text-indigo-700">Octo Quiz</h1>
 
-        .form-label {
-            font-weight: bold;
-        }
+  <!-- Tabs -->
+  <div class="flex mb-6 border-b border-gray-300">
+    <button id="loginTab" class="flex-1 py-2 px-4 border-b-2 border-indigo-600 font-semibold text-indigo-700 focus:outline-none">Login</button>
+    <button id="registerTab" class="flex-1 py-2 px-4 border-b-2 border-transparent hover:border-indigo-400 focus:outline-none">Register</button>
+  </div>
 
-        .form-input {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .form-submit {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .form-submit:hover {
-            background-color: #0056b3;
-        }
-
-        .mensagem {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #ffc107;
-            color: #333;
-            border-radius: 5px;
-        }
-    </style>
-</head>
-<body>
-    <div class="login-container">
-        <h1>Login</h1>
-        <form action="/" method="post" class="login-form">
-            {% csrf_token %}
-
-            <div class="form-group">
-                <label for="usuario" class="form-label">Username:</label>
-                <input type="text" name="usuario" id="usuario" value="{{ Usuario }}" class="form-input">
-            </div>
-            <div class="form-group">
-                <label for="senha" class="form-label">Password:</label>
-                <input type="password" name="senha" id="senha" value="{{ senha }}" class="form-input">
-            </div>
-            <button type="submit" class="form-submit">Submit</button>
-        </form>
-        {%if mensagem %}
-        <div class="mensagem">
-            {{ mensagem }}
-        </div>
-        {% endif %}
-
+  <!-- Messages -->
+  {% if mensagem %}
+    <div class="mb-4 p-3 text-sm text-red-700 bg-red-100 rounded">
+      {{ mensagem }}
     </div>
-</body>
-</html>
+  {% endif %}
+
+  <!-- Login Form -->
+  <form id="loginForm" method="post" action="{% url 'home' %}">
+    {% csrf_token %}
+    <label for="usuario" class="block text-gray-700 mb-2">Username</label>
+    <input type="text" name="usuario" id="usuario" required autofocus
+      class="w-full mb-4 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+
+    <label for="senha" class="block text-gray-700 mb-2">Password</label>
+    <input type="password" name="senha" id="senha" required
+      class="w-full mb-6 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+
+    <button type="submit"
+      class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded transition-colors">
+      Login
+    </button>
+  </form>
+
+  <!-- Register Form -->
+  <form id="registerForm" method="post" action="{% url 'register' %}" class="hidden">
+    {% csrf_token %}
+    <label for="new_username" class="block text-gray-700 mb-2">Username</label>
+    <input type="text" name="new_username" id="new_username" required
+      class="w-full mb-4 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+
+    <label for="new_email" class="block text-gray-700 mb-2">Email</label>
+    <input type="email" name="new_email" id="new_email" required
+      class="w-full mb-4 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+
+    <label for="new_password" class="block text-gray-700 mb-2">Password</label>
+    <input type="password" name="new_password" id="new_password" required
+      class="w-full mb-6 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+
+    <button type="submit"
+      class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded transition-colors">
+      Register
+    </button>
+  </form>
+</div>
+
+<script>
+  const loginTab = document.getElementById('loginTab');
+  const registerTab = document.getElementById('registerTab');
+  const loginForm = document.getElementById('loginForm');
+  const registerForm = document.getElementById('registerForm');
+
+  loginTab.addEventListener('click', () => {
+    loginTab.classList.add('border-indigo-600', 'font-semibold', 'text-indigo-700');
+    loginTab.classList.remove('border-transparent');
+    registerTab.classList.remove('border-indigo-600', 'font-semibold', 'text-indigo-700');
+    registerTab.classList.add('border-transparent');
+    loginForm.classList.remove('hidden');
+    registerForm.classList.add('hidden');
+  });
+
+  registerTab.addEventListener('click', () => {
+    registerTab.classList.add('border-indigo-600', 'font-semibold', 'text-indigo-700');
+    registerTab.classList.remove('border-transparent');
+    loginTab.classList.remove('border-indigo-600', 'font-semibold', 'text-indigo-700');
+    loginTab.classList.add('border-transparent');
+    registerForm.classList.remove('hidden');
+    loginForm.classList.add('hidden');
+  });
+</script>
+{% endblock %}

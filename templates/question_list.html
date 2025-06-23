@@ -1,0 +1,27 @@
+
+{% block content %}
+<div class="container mx-auto mt-10">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-indigo-700">{{ view.model._meta.verbose_name_plural|title }}</h2>
+    <a href="{% url view.model._meta.model_name|add:'-create-page' %}" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+      + New {{ view.model._meta.verbose_name.title }}
+    </a>
+  </div>
+
+  {% if object_list %}
+  <ul class="space-y-4">
+    {% for obj in object_list %}
+    <li class="bg-white shadow rounded p-4 flex justify-between items-center">
+      <span>{{ obj }}</span>
+      <div class="space-x-2">
+        <a href="{% url view.model._meta.model_name|add:'-update-page' obj.pk %}" class="text-blue-600 hover:underline">Edit</a>
+        <a href="{% url view.model._meta.model_name|add:'-delete-page' obj.pk %}" class="text-red-600 hover:underline">Delete</a>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="text-gray-600">No {{ view.model._meta.verbose_name_plural }} found.</p>
+  {% endif %}
+</div>
+{% endblock %}

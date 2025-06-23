@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto mt-10">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-indigo-700">{{ model_verbose_name_plural }}</h2>
+    <a href="{% url create_url_name %}" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+      + New {{ model_verbose_name }}
+    </a>
+  </div>
+
+  {% if categories %}
+  <ul class="space-y-4">
+    {% for obj in categories %}
+    <li class="bg-white shadow rounded p-4 flex justify-between items-center">
+      <span>{{ obj }}</span>
+      <div class="space-x-2">
+        <a href="{% url update_url_name obj.pk %}" class="text-blue-600 hover:underline">Edit</a>
+        <a href="{% url delete_url_name obj.pk %}" class="text-red-600 hover:underline">Delete</a>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="text-gray-600">No {{ model_verbose_name_plural }} found.</p>
+  {% endif %}
+</div>
+{% endblock %}
