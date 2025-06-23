@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div 
+  class="max-w-xl mx-auto mt-20 px-4" 
+  x-data="deleteDeck('{{ token }}')" 
+  x-init="getDeckId()"
+>
+  <div class="bg-white shadow rounded p-6 text-center">
+    <h1 class="text-2xl font-bold text-red-600 mb-4">Excluir Deck</h1>
+    <p class="text-gray-700 mb-6">Tem certeza que deseja excluir o deck <span class="font-semibold" x-text="deckName"></span>?</p>
+
+    <div class="flex justify-center space-x-4">
+      <button 
+        @click="deleteDeck()" 
+        class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition font-semibold">
+        Excluir
+      </button>
+      <a href="{% url 'deck-list-page' %}" 
+         class="text-gray-600 hover:text-indigo-700 font-medium underline transition">
+        Cancelar
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  function deleteDeck(token) {
+    return {
+      deckId: null,
+      deckName: '',
+      getDeckId() {
+        const match = window.location.pathname.match(/\d+/);
+        if (match) {
+          this.deckId = match[0];
+          this.fetchDeck();
+        }
+      },
+      async fetchDeck() {
+        try {
+          const res = await fetch(`/api/decks/${this.deckId}/`, {
+            headers: {
+              'Content-Type': 'application/json',
+              ...(token && { 'Authorization': `Bearer ${token}` })
+            }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            this.deckName = data.name;
+          }
+        } catch (err) {
+          console.error('Erro ao carregar dados do deck.', err);
+        }
+      },
+      async deleteDeck() {
+        try {
+          const res = await fetch(`/api/decks/${this.deckId}/`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              ...(token && { 'Authorization': `Bearer ${token}` })
+            }
+          });
+          if (res.ok) {
+            window.location.href = "{% url 'deck-list-page' %}";
+          } else {
+            alert('Erro ao excluir o deck.');
+          }
+        } catch (err) {
+          alert('Erro na requisição.');
+        }
+      }
+    };
+  }
+</script>
+{% endblock %}

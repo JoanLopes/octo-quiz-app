@@ -6,20 +6,17 @@
 <div class="max-w-md mx-auto bg-white p-8 rounded shadow-md">
   <h1 class="text-2xl font-bold mb-6 text-center text-indigo-700">Octo Quiz</h1>
 
-  <!-- Tabs -->
   <div class="flex mb-6 border-b border-gray-300">
     <button id="loginTab" class="flex-1 py-2 px-4 border-b-2 border-indigo-600 font-semibold text-indigo-700 focus:outline-none">Login</button>
     <button id="registerTab" class="flex-1 py-2 px-4 border-b-2 border-transparent hover:border-indigo-400 focus:outline-none">Register</button>
   </div>
 
-  <!-- Messages -->
   {% if mensagem %}
     <div class="mb-4 p-3 text-sm text-red-700 bg-red-100 rounded">
       {{ mensagem }}
     </div>
   {% endif %}
 
-  <!-- Login Form -->
   <form id="loginForm" method="post" action="{% url 'home' %}">
     {% csrf_token %}
     <label for="usuario" class="block text-gray-700 mb-2">Username</label>
@@ -36,7 +33,6 @@
     </button>
   </form>
 
-  <!-- Register Form -->
   <form id="registerForm" method="post" action="{% url 'register' %}" class="hidden">
     {% csrf_token %}
     <label for="new_username" class="block text-gray-700 mb-2">Username</label>

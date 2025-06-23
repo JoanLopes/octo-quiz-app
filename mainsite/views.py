@@ -1,3 +1,4 @@
+from pyexpat.errors import messages
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.views import View
@@ -52,7 +53,6 @@ class Register(View):
             user.set_password(form.cleaned_data['password'])
             user.save()
             
-            # Loga o usuário automaticamente
             user = authenticate(username=user.username, password=form.cleaned_data['password'])
             if user:
                 login(request, user)
