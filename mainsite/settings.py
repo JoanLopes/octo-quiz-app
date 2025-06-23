@@ -80,17 +80,14 @@ WSGI_APPLICATION = 'mainsite.wsgi.application'
 # """
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'octoquiz',
-        'USER': 'octoquizuser',
-        'PASSWORD': 'octopass',
-        'HOST': 'octoquiz-db',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME', 'octoquizdb'),
+        'USER': os.environ.get('DB_USER', 'octoquizuser'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'octoquizpass'),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
-
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
