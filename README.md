@@ -1,91 +1,139 @@
+# 📚 Flashcards App
 
-## 🐙 Octo Quiz App – Backend + Web (Django)
+Aplicativo web de estudos com **flashcards**, construído com **Django + DRF**, **Alpine.js**, e **Tailwind CSS**. Possui API REST autenticada via JWT e interface web moderna.
 
-**Octo Quiz App** é uma plataforma de estudos com quizzes interativos e rankings de desempenho. Esta versão foca no desenvolvimento do **backend em Django** com API REST e interface **web responsiva via Django admin ou templates**, ideal para uso por administradores, professores e alunos.
+## 🐳 Rodando com Docker
 
----
-
-### 📚 Funcionalidades
-
-* Cadastro e autenticação de usuários
-* Criação e gerenciamento de quizzes
-* Execução de quizzes com correção automática
-* Pontuação e histórico de resultados por usuário
-* Ranking geral de desempenho
-* Interface administrativa via Django admin
-
----
-
-## 🚀 Tecnologias utilizadas
-
-* **Linguagem**: Python 3.10+
-* **Framework**: Django 5.x + Django REST Framework
-* **Banco de dados**: PostgreSQL
-* **Ambiente**: Docker + Docker Compose
-* **Gerenciador de pacotes**: pip
-
----
-
-## ⚙️ Como rodar o projeto
-
-### 🧾 Pré-requisitos
-
-* [Docker](https://www.docker.com/)
-* [Docker Compose](https://docs.docker.com/compose/)
-
-### 🛠️ Passos de instalação
+### 1. Clone o repositório
 
 ```bash
-# 1. Clone o repositório
-git clone https://github.com/joanlopes/octo-quiz-app.git
-cd octo-quiz-app
-
-# 2. Construa os containers
-docker-compose up --build
+git clone https://github.com/seuusuario/flashcards-app.git
+cd flashcards-app
 ```
 
-### 🗃️ Migrações iniciais
+### 2. Construa os containers
 
 ```bash
-docker-compose exec web python manage.py migrate
+docker-compose build
 ```
 
-### 👤 Criar superusuário
+### 3. Suba os containers
+
+```bash
+docker-compose up
+```
+
+O app estará disponível em: [http://localhost:8000](http://localhost:8000)
+
+---
+
+## ⚙️ Comandos úteis (com Docker)
+
+### Acessar o container
+
+```bash
+docker-compose exec web bash
+```
+
+### Criar superusuário
 
 ```bash
 docker-compose exec web python manage.py createsuperuser
 ```
 
+### Aplicar migrações
+
+```bash
+docker-compose exec web python manage.py migrate
+```
+
+### Coletar arquivos estáticos (produção)
+
+```bash
+docker-compose exec web python manage.py collectstatic
+```
+
 ---
 
-## 🌐 Acessos
+## 🧠 Funcionalidades
 
-| Recurso                             | URL                                                        |
-| ----------------------------------- | ---------------------------------------------------------- |
-| API REST                            | [http://localhost:8000/api/](http://localhost:8000/api/)   |
-| Django Admin                        | [http://localhost:8000/admin](http://localhost:8000/admin) |
-| Navegação geral (se usar templates) | [http://localhost:8000/](http://localhost:8000/)           |
+- CRUD de **decks** e **flashcards**
+- Upload de imagens para flashcards
+- Estudo interativo de flashcards
+- Interface web com Tailwind + Alpine.js
+- API RESTful protegida por JWT
+- Documentação Swagger e ReDoc
 
 ---
 
+## 🔐 Autenticação (JWT)
+
+- Obter token:
+  ```
+  POST /api/token/
+  ```
+- Refresh token:
+  ```
+  POST /api/token/refresh/
+  ```
+- As requisições autenticadas usam:
+  ```
+  Authorization: Bearer <access_token>
+  ```
+
 ---
 
-<!-- ## ✅ Status do projeto
+## 📄 Documentação da API
 
-| Etapa                       | Status                           |
-| --------------------------- | -------------------------------- |
-| Backend com Django REST     | ✅ Pronto/inicializado            |
-| API de quizzes e categorias | ✅ Em desenvolvimento             |
-| Interface admin web         | ✅ Disponível                     |
-| Suporte a rankings          | ✅ Em progresso                   |
-| Frontend mobile (Ionic)     | 🔜 Separado em outro repositório |
+- Swagger: [http://localhost:8000/swagger/](http://localhost:8000/swagger/)
+- ReDoc: [http://localhost:8000/redoc/](http://localhost:8000/redoc/)
 
---- -->
+---
+
+## 📁 Estrutura do Projeto
+
+```bash
+flashcards-app/
+├── flashcards/             # App principal com os modelos e API
+├── mainsite/               # Autenticação e páginas principais
+├── media/                  # Uploads de imagens (flashcards)
+├── static/                 # Arquivos estáticos (via collectstatic)
+├── templates/              # HTML com Tailwind + Alpine.js
+├── docker-compose.yml
+├── Dockerfile
+├── requirements.txt
+└── manage.py
+```
+
+---
+
+## ✅ Testes
+
+Execute os testes dentro do container:
+
+```bash
+docker-compose exec web python manage.py test
+```
+
+---
+
+## 📱 Versão Mobile
+
+A versão mobile está sendo construída com:
+
+- Ionic + Angular
+- Comunicação com a API Django via JWT
+
+---
+
+## 📌 Requisitos
+
+- Docker
+- Docker Compose
+
+---
 
 ## 📄 Licença
 
-Este projeto está licenciado sob a [MIT License](LICENSE).
-
----
-
-Se quiser, posso salvar este conteúdo em um arquivo `README.md`, ou complementar com instruções para testes automatizados, separação de settings (`dev`/`prod`), ou documentação da API. Deseja algum desses?
+MIT License
+```
