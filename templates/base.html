@@ -20,11 +20,12 @@
         <ul class="flex space-x-4">
           {% if user.is_authenticated %}
             <li><a href="/" class="hover:underline">Home</a></li>
+            <li><a href="{% url 'deck-select-for-execution-page' %}" class="hover:underline">estudar</a></li>
             <li><a href="{% url 'deck-list-page' %}" class="hover:underline">Decks</a></li>
             <li><a href="{% url 'flashcard-list-page' %}" class="hover:underline">Flashcards</a></li>
-            <li><a href="{% url 'logout' %}" class="hover:underline">Logout</a></li>
+            <li><a href="{% url 'logout' %}" class="hover:underline">Sair</a></li>
           {% else %}
-            <li><a href="{% url 'home' %}" class="hover:underline">Login</a></li>
+            <li><a href="{% url 'home' %}" class="hover:underline">Entrar</a></li>
           {% endif %}
         </ul>
       </nav>

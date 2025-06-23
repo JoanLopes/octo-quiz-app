@@ -1,35 +1,36 @@
 {% extends "base.html" %}
 {% block content %}
 <style>
-  /* Estilo simples para input, textarea e select para harmonizar */
   .input {
-    border: 1px solid #d1d5db; /* gray-300 */
-    border-radius: 0.375rem; /* rounded-md */
-    padding: 0.5rem 0.75rem; /* px-3 py-2 */
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
     width: 100%;
     font-size: 1rem;
     line-height: 1.5rem;
     outline-offset: 2px;
   }
   .input:focus {
-    outline: 2px solid #6366f1; /* indigo-500 */
+    outline: 2px solid #6366f1;
     outline-offset: 2px;
     border-color: transparent;
   }
 </style>
 
-<div class="max-w-xl mx-[20%] mt-16 px-4" x-data="flashcardForm('{{ token }}')" x-init="initForm()">
+<div class="max-w-xl mx-[30%] items-center mt-16 px-4" x-data="flashcardForm('{{ token }}')" x-init="initForm()">
   <h1 class="text-3xl font-bold text-center text-indigo-700 mb-8" x-text="isEdit ? 'Editar Flashcard' : 'Novo Flashcard'"></h1>
 
-  <form @submit.prevent="submitForm" class="bg-white shadow rounded p-6 space-y-6">
+  <form @submit.prevent="submitForm" enctype="multipart/form-data" class="bg-white shadow rounded p-6 space-y-6">
     <div>
       <label class="block text-sm font-medium text-gray-700 mb-1">Pergunta</label>
       <input type="text" x-model="form.question" required class="input">
     </div>
+
     <div>
       <label class="block text-sm font-medium text-gray-700 mb-1">Resposta</label>
       <textarea rows="4" x-model="form.answer" class="input"></textarea>
     </div>
+
     <div>
       <label class="block text-sm font-medium text-gray-700 mb-1">Deck</label>
       <select x-model="form.deck" required class="input">
@@ -39,6 +40,15 @@
         </template>
       </select>
     </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Foto</label>
+      <input type="file" @change="handlePhotoChange" class="input" accept="image/*">
+      <template x-if="previewPhoto">
+        <img :src="previewPhoto" alt="Preview" class="mt-4 rounded shadow max-h-48">
+      </template>
+    </div>
+
     <div class="flex justify-between items-center">
       <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 transition font-semibold">Salvar</button>
       <a href="{% url 'flashcard-list-page' %}" class="underline text-indigo-600">Cancelar</a>
@@ -51,11 +61,18 @@ function flashcardForm(token) {
   return {
     isEdit: window.location.pathname.includes('/edit/'),
     pk: window.location.pathname.match(/\d+/)?.[0],
-    form: { question: '', answer: '', deck: '' },
+    form: {
+      question: '',
+      answer: '',
+      deck: '',
+    },
+    photoFile: null,
+    previewPhoto: null,
     decks: [],
 
     async initForm() {
       await this.fetchDecks();
+
       if (this.isEdit) {
         const res = await fetch(`/api/flashcards/${this.pk}/`, {
           headers: {
@@ -70,39 +87,53 @@ function flashcardForm(token) {
             answer: data.answer,
             deck: data.deck
           };
+          if (data.photo) {
+            this.previewPhoto = data.photo;
+          }
         }
       }
     },
 
     async fetchDecks() {
-      try {
-        const res = await fetch('/api/decks/', {
-          headers: {
-            'Content-Type': 'application/json',
-            ...(token && { 'Authorization': `Bearer ${token}` })
-          }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          this.decks = data.results || [];
+      const res = await fetch('/api/decks/', {
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` })
         }
-      } catch (err) {
-        console.error('Erro ao carregar decks:', err);
-        this.decks = [];
+      });
+      if (res.ok) {
+        const data = await res.json();
+        this.decks = data.results || [];
       }
+    },
+
+    handlePhotoChange(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      this.photoFile = file;
+      this.previewPhoto = URL.createObjectURL(file);
     },
 
     async submitForm() {
       const method = this.isEdit ? 'PUT' : 'POST';
       const url = this.isEdit ? `/api/flashcards/${this.pk}/` : '/api/flashcards/';
+      const formData = new FormData();
+
+      formData.append('question', this.form.question);
+      formData.append('answer', this.form.answer);
+      formData.append('deck', this.form.deck);
+      if (this.photoFile) {
+        formData.append('photo', this.photoFile);
+      }
+
       const res = await fetch(url, {
         method,
         headers: {
-          'Content-Type': 'application/json',
           ...(token && { 'Authorization': `Bearer ${token}` })
         },
-        body: JSON.stringify(this.form)
+        body: formData
       });
+
       if (res.ok) {
         window.location.href = "{% url 'flashcard-list-page' %}";
       } else {

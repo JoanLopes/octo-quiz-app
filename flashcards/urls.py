@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from flashcards import views
 
 urlpatterns = [
     path('decks/', views.DeckListView.as_view(), name='deck-list-page'),
@@ -11,4 +11,8 @@ urlpatterns = [
     path('flashcards/create/', views.FlashcardCreateView.as_view(), name='flashcard-create-page'),
     path('flashcards/<int:pk>/edit/', views.FlashcardUpdateView.as_view(), name='flashcard-edit-page'),
     path('flashcards/<int:pk>/delete/', views.FlashcardDeleteView.as_view(), name='flashcard-delete-page'),
+
+    path('study/deck-select/', views.DeckSelectForExecutionView.as_view(), name='deck-select-for-execution-page'),
+    path('study/deck/<int:pk>/', views.DeckStudyView.as_view(), name='deck-study-page'),
+
 ]

@@ -23,3 +23,9 @@ class FlashcardUpdateView(TemplateView):
 
 class FlashcardDeleteView(TemplateView):
     template_name = 'flashcards/flashcard_confirm_delete.html'
+
+class DeckSelectForExecutionView(TemplateView):
+    template_name = 'study/deck_select.html'
+
+class DeckStudyView(TemplateView):
+    template_name = 'study/deck_study.html'

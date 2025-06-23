@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-3xl mx-[30%] mt-16 px-4" x-data="deckStudy('{{ token }}', {{ pk }})" x-init="loadDeck()">
+  <h1 class="text-3xl font-bold text-center text-indigo-700 mb-8" x-text="deckName || 'Estudo de Deck'"></h1>
+
+  <template x-if="loading">
+    <p class="text-center text-gray-500">Carregando flashcards...</p>
+  </template>
+
+<template x-if="!loading && flashcards.length > 0">
+  <div class="bg-white border border-indigo-200 rounded-lg shadow p-8 text-center">
+    <div class="text-lg text-gray-600 mb-2">Card <span x-text="currentIndex + 1"></span> de <span x-text="flashcards.length"></span></div>
+    <h2 class="text-2xl font-bold text-indigo-800 mb-4" x-text="flashcards[currentIndex].question"></h2>
+
+    <template x-if="flashcards[currentIndex].photo">
+      <div class="my-4">
+        <img :src="flashcards[currentIndex].photo" alt="Imagem do flashcard" class="mx-auto rounded shadow max-h-64 object-contain" loading="lazy">
+      </div>
+    </template>
+
+    <template x-if="showAnswer">
+      <p class="text-lg text-gray-800 font-medium" x-text="flashcards[currentIndex].answer"></p>
+    </template>
+    <template x-if="!showAnswer">
+      <button @click="showAnswer = true" class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition">
+        Mostrar Resposta
+      </button>
+    </template>
+
+    <div class="flex justify-between mt-6">
+      <button @click="prevCard" :disabled="currentIndex === 0"
+        class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50">
+        ← Anterior
+      </button>
+      <button @click="nextCard" :disabled="currentIndex === flashcards.length - 1"
+        class="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600 disabled:opacity-50">
+        Próximo →
+      </button>
+    </div>
+  </div>
+</template>
+
+
+  <template x-if="!loading && flashcards.length === 0">
+    <p class="text-center text-gray-500">Este deck não possui flashcards.</p>
+  </template>
+</div>
+
+<script>
+function deckStudy(token, deckId) {
+  return {
+    flashcards: [],
+    currentIndex: 0,
+    showAnswer: false,
+    loading: true,
+    deckName: '',
+
+    async loadDeck() {
+      try {
+        const res = await fetch(`/api/flashcards/?deck=${deckId}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token && { 'Authorization': `Bearer ${token}` })
+          }
+        });
+        const data = await res.json();
+        this.flashcards = data.results || data;
+        if (this.flashcards.length > 0) {
+          this.deckName = this.flashcards[0].deck_name || 'Deck';
+        }
+      } catch (e) {
+        console.error('Erro ao carregar flashcards:', e);
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    nextCard() {
+      if (this.currentIndex < this.flashcards.length - 1) {
+        this.currentIndex++;
+        this.showAnswer = false;
+      }
+    },
+
+    prevCard() {
+      if (this.currentIndex > 0) {
+        this.currentIndex--;
+        this.showAnswer = false;
+      }
+    }
+  }
+}
+</script>
+{% endblock %}
