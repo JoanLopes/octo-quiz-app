@@ -25,4 +25,9 @@ class FlashcardViewSet(viewsets.ModelViewSet):
     search_fields = ['question', 'answer']
 
     def get_queryset(self):
-        return Flashcard.objects.filter(deck__user=self.request.user)
+        deck_id = self.request.query_params.get('deck')
+        query = Flashcard.objects.filter(deck__user=self.request.user)
+        if deck_id is None:
+            return []
+        
+        return query.filter(deck_id=deck_id)
